@@ -7,9 +7,14 @@ go run main.go
 
 ## API Endpoints
 GET /students
+
 GET /students/:id
+
 POST /students
+
 PUT /students/:id
+
 DELETE /students/:id
+
 
 kittithat Densakulprasert 6609650079
