@@ -40,8 +40,14 @@ func (h *StudentHandler) CreateStudent(c *gin.Context) {
 		return
 	}
 
+	msg := validateStudent(student)
+	if msg != "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": msg})
+		return
+	}
+
 	if err := h.Service.CreateStudent(student); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create student"})
 		return
 	}
 
@@ -54,6 +60,15 @@ func (h *StudentHandler) UpdateStudent(c *gin.Context) {
 	var student models.Student
 	if err := c.ShouldBindJSON(&student); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if student.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "name must not be empty"})
+		return
+	}
+	if student.GPA < 0.0 || student.GPA > 4.0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "gpa must be between 0.0 and 4.0"})
 		return
 	}
 
